@@ -1,4 +1,4 @@
-# Mohd Sahil - Data Scientist | Data Analyst
+# Mohd Sahil - Data Scientist | Gen AI | RAG | AI Agents
 
 ## Contact Information
 - **Mobile**: +91 7760995161 
