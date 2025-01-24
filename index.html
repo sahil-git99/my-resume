@@ -24,8 +24,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: auto;
         }
         canvas {
+            display: block;
+            margin: auto;
             border: 1px solid #ddd;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -48,18 +51,26 @@
         loadingTask.promise.then(pdf => {
             // Get the first page
             pdf.getPage(1).then(page => {
-                const viewport = page.getViewport({ scale: 1.5 });
+                // Adjust the scale for better fit
+                const viewport = page.getViewport({ scale: 1.2 }); // Adjust scale to fit content
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
+
+                // Set the canvas size based on the page dimensions
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
+
+                // Append the canvas to the viewer
                 pdfViewer.appendChild(canvas);
 
+                // Render the page on the canvas
                 const renderContext = {
                     canvasContext: context,
                     viewport: viewport,
                 };
-                page.render(renderContext);
+                page.render(renderContext).promise.then(() => {
+                    console.log('PDF page rendered successfully.');
+                });
             });
         }).catch(error => {
             console.error('Error loading PDF:', error);
