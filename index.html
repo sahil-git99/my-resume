@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mohd Sahil | Resume</title>
-    <!-- Include PDF.js library from jsDelivr CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js"></script>
     <style>
-        /* Ensure the body and canvas take the full viewport height */
+        /* Ensure the body and iframe take the full viewport height */
         body {
             margin: 0;
             padding: 0;
@@ -16,88 +14,16 @@
             align-items: center;
             height: 100vh;
             overflow: hidden;
-            background-color: #f0f0f0;
         }
-        #pdf-viewer {
+
+        iframe {
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-        }
-        canvas {
-            display: block;
-            margin: auto;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div id="pdf-viewer"></div>
-    <script>
-        // Path to your PDF file
-        const pdfUrl = 'main_file/sahil_resume.pdf';
-
-        // Get the div where the PDF will be rendered
-        const pdfViewer = document.getElementById('pdf-viewer');
-
-        // Set the workerSrc property
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
-
-        // Function to determine dynamic scale based on device
-        function getScale() {
-            const screenWidth = window.innerWidth;
-
-            if (screenWidth <= 480) {
-                // Small screens (mobile)
-                return 0.75;
-            } else if (screenWidth <= 768) {
-                // Medium screens (tablets)
-                return 1.0;
-            } else {
-                // Large screens (desktop)
-                return 1.5;
-            }
-        }
-
-        // Load the PDF document
-        const loadingTask = pdfjsLib.getDocument(pdfUrl);
-        loadingTask.promise.then(pdf => {
-            // Get the first page
-            pdf.getPage(1).then(page => {
-                // Determine the scale dynamically
-                const scale = getScale();
-                const viewport = page.getViewport({ scale: scale });
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-
-                // Set the canvas size based on the page dimensions
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-
-                // Append the canvas to the viewer
-                pdfViewer.appendChild(canvas);
-
-                // Render the page on the canvas
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport,
-                };
-                page.render(renderContext).promise.then(() => {
-                    console.log('PDF page rendered successfully with scale:', scale);
-                });
-            });
-        }).catch(error => {
-            console.error('Error loading PDF:', error);
-            pdfViewer.textContent = 'Failed to load PDF.';
-        });
-
-        // Optional: Reload the page if resized to a significantly different scale
-        window.addEventListener('resize', () => {
-            location.reload();
-        });
-    </script>
+    <iframe src="main_file/sahil_resume.pdf#zoom=FitPage"></iframe>
 </body>
 </html>
