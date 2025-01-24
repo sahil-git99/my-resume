@@ -46,13 +46,30 @@
         // Set the workerSrc property
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.worker.min.js';
 
+        // Function to determine dynamic scale based on device
+        function getScale() {
+            const screenWidth = window.innerWidth;
+
+            if (screenWidth <= 480) {
+                // Small screens (mobile)
+                return 0.75;
+            } else if (screenWidth <= 768) {
+                // Medium screens (tablets)
+                return 1.0;
+            } else {
+                // Large screens (desktop)
+                return 1.5;
+            }
+        }
+
         // Load the PDF document
         const loadingTask = pdfjsLib.getDocument(pdfUrl);
         loadingTask.promise.then(pdf => {
             // Get the first page
             pdf.getPage(1).then(page => {
-                // Adjust the scale for better fit
-                const viewport = page.getViewport({ scale: 1.2 }); // Adjust scale to fit content
+                // Determine the scale dynamically
+                const scale = getScale();
+                const viewport = page.getViewport({ scale: scale });
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
 
@@ -69,12 +86,17 @@
                     viewport: viewport,
                 };
                 page.render(renderContext).promise.then(() => {
-                    console.log('PDF page rendered successfully.');
+                    console.log('PDF page rendered successfully with scale:', scale);
                 });
             });
         }).catch(error => {
             console.error('Error loading PDF:', error);
             pdfViewer.textContent = 'Failed to load PDF.';
+        });
+
+        // Optional: Reload the page if resized to a significantly different scale
+        window.addEventListener('resize', () => {
+            location.reload();
         });
     </script>
 </body>
